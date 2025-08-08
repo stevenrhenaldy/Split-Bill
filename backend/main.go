@@ -1,0 +1,59 @@
+package main
+
+import (
+	"fmt"
+
+	"split-bill/backend/config"
+	"split-bill/backend/controller"
+	"split-bill/backend/model"
+	"split-bill/backend/repository"
+	"split-bill/backend/router"
+	"split-bill/backend/service"
+
+	"github.com/go-playground/validator"
+	"github.com/gofiber/fiber/v2"
+)
+
+func main() {
+
+	fmt.Print("Starting API server...")
+
+	loadConfig, err := config.LoadConfig(".")
+	if err != nil {
+		fmt.Printf("Error loading config: %v\n", err)
+		return
+	}
+
+	fmt.Print(loadConfig.DBHost, loadConfig.DBPort, loadConfig.DBUser, loadConfig.DBPassword, loadConfig.DBName)
+
+	// Database
+	db := config.ConnectDB(&loadConfig)
+	db.Table("receipts").AutoMigrate(&model.Receipt{})
+
+	// Init Repositories
+	receiptRepository := repository.NewReceiptRepositoryImpl(db)
+
+	// Init Validators
+	validate := validator.New()
+
+	// Init Services
+	receiptService := service.NewReceiptServiceImpl(receiptRepository, validate)
+
+	// Init Controllers
+	receiptController := controller.NewReceiptController(receiptService)
+
+	// Routes
+	routes := router.NewRouter(receiptController)
+
+	app := fiber.New()
+
+	app.Mount("/api", routes)
+
+	routes.Get("/healthcheck", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"status": "ok",
+		})
+	})
+
+	app.Listen(":3000")
+}
