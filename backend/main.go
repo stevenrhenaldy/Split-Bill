@@ -24,11 +24,11 @@ func main() {
 		return
 	}
 
-	fmt.Print(loadConfig.DBHost, loadConfig.DBPort, loadConfig.DBUser, loadConfig.DBPassword, loadConfig.DBName)
+	// fmt.Print(loadConfig.DBHost, loadConfig.DBPort, loadConfig.DBUser, loadConfig.DBPassword, loadConfig.DBName)
 
 	// Database
 	db := config.ConnectDB(&loadConfig)
-	db.Table("receipts").AutoMigrate(&model.Receipt{})
+	db.AutoMigrate(&model.Receipt{}, &model.Currency{}, &model.User{})
 
 	// Init Repositories
 	receiptRepository := repository.NewReceiptRepositoryImpl(db)
