@@ -6,6 +6,7 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gofiber/fiber/v2 v2.52.9
 	github.com/google/uuid v1.6.0
+	github.com/shopspring/decimal v1.4.0
 	github.com/spf13/viper v1.20.1
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.30.1
@@ -31,7 +32,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
-	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.12.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
