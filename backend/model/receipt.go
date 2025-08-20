@@ -10,6 +10,7 @@ import (
 type Receipt struct {
 	ID             uuid.UUID       `gorm:"type:uuid"`
 	UserID         uuid.UUID       `gorm:"" json:"user_id"`
+	User           User            `gorm:"" json:"user"`
 	CurrencyID     string          `gorm:"type:varchar(3)" json:"currency_id"`
 	Name           string          `gorm:"not null" json:"name"`
 	Description    string          `gorm:"" json:"description"`
