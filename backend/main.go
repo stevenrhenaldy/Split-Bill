@@ -39,18 +39,21 @@ func main() {
 
 	// Init Repositories
 	receiptRepository := repository.NewReceiptRepositoryImpl(db)
+	userRepository := repository.NewUserRepositoryImpl(db)
 
 	// Init Validators
 	validate := validator.New()
 
 	// Init Services
 	receiptService := service.NewReceiptServiceImpl(receiptRepository, validate)
+	authService := service.NewAuthServiceImpl(userRepository, validate)
 
 	// Init Controllers
 	receiptController := controller.NewReceiptController(receiptService)
+	authController := controller.NewAuthController(authService)
 
 	// Routes
-	routes := router.NewRouter(receiptController)
+	routes := router.NewRouter(receiptController, authController)
 
 	app := fiber.New()
 
