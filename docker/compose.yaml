@@ -11,6 +11,17 @@ services:
       db:
         condition: service_healthy
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - split-bill-network
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     image: postgres:latest
     environment:
