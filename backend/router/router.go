@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func NewRouter(receiptController *controller.ReceiptController) *fiber.App {
+func NewRouter(receiptController *controller.ReceiptController, authController *controller.AuthController) *fiber.App {
 	router := fiber.New()
 
 	router.Route("/receipts", func(router fiber.Router) {
@@ -15,6 +15,10 @@ func NewRouter(receiptController *controller.ReceiptController) *fiber.App {
 		router.Get("/:id", receiptController.FindByID)
 		router.Put("/:id", receiptController.Update)
 		router.Delete("/:id", receiptController.Delete)
+	})
+
+	router.Route("/auth", func(router fiber.Router) {
+		router.Post("/register", authController.Register)
 	})
 
 	return router
