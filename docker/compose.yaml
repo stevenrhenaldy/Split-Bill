@@ -1,0 +1,31 @@
+name: split-bill
+
+services:
+  app:
+    build: ../backend
+    ports:
+      - 3000:3000
+    networks:
+      - split-bill-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=split-bill
+      - POSTGRES_PASSWORD=split-bill
+      - POSTGRES_DB=split-bill
+    volumes:
+      - ./data/db/:/var/lib/postgresql
+    networks:
+      - split-bill-network
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U split-bill -d split-bill'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  split-bill-network:
