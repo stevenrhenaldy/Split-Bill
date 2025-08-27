@@ -32,59 +32,16 @@ func (controller *AuthController) Register(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "User registered successfully"})
 }
 
-// func (controller *UserController) FindAll(ctx *fiber.Ctx) error {
-// 	users, err := controller.UserService.FindAll()
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-// 	}
-// 	return ctx.Status(fiber.StatusOK).JSON(users)
-// }
+func (controller *AuthController) Login(ctx *fiber.Ctx) error {
+	var loginRequest request.LoginRequest
+	if err := ctx.BodyParser(&loginRequest); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
 
-// func (controller *UserController) FindByID(ctx *fiber.Ctx) error {
-// 	id := ctx.Params("id")
-// 	parsedUUID, err := uuid.Parse(id)
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid UUID"})
-// 	}
+	loginResponse, err := controller.AuthService.Login(loginRequest)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+	}
 
-// 	user, err := controller.UserService.FindByID(parsedUUID)
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-// 	}
-// 	return ctx.Status(fiber.StatusOK).JSON(user)
-// }
-
-// func (controller *UserController) Update(ctx *fiber.Ctx) error {
-// 	var updateUserRequest request.UpdateUserRequest
-// 	if err := ctx.BodyParser(&updateUserRequest); err != nil {
-// 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-// 	}
-
-// 	id := ctx.Params("id")
-
-// 	parsedUUID, err := uuid.Parse(id)
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid UUID"})
-// 	}
-
-// 	updatedUser, err := controller.UserService.Update(parsedUUID, updateUserRequest)
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-// 	}
-
-// 	return ctx.Status(fiber.StatusOK).JSON(updatedUser)
-// }
-
-// func (controller *UserController) Delete(ctx *fiber.Ctx) error {
-// 	id := ctx.Params("id")
-// 	parsedUUID, err := uuid.Parse(id)
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid UUID"})
-// 	}
-
-// 	if err := controller.UserService.Delete(parsedUUID); err != nil {
-// 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-// 	}
-
-// 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
-// }
+	return ctx.Status(fiber.StatusOK).JSON(loginResponse)
+}
