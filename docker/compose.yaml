@@ -7,6 +7,13 @@ services:
       - 3000:3000
     networks:
       - split-bill-network
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_TABLE=${DB_TABLE}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       db:
         condition: service_healthy
@@ -14,9 +21,9 @@ services:
   db:
     image: postgres:latest
     environment:
-      - POSTGRES_USER=split-bill
-      - POSTGRES_PASSWORD=split-bill
-      - POSTGRES_DB=split-bill
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_TABLE}
     volumes:
       - ./data/db/:/var/lib/postgresql
     networks:
