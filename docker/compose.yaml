@@ -2,6 +2,7 @@ name: split-bill
 
 services:
   app:
+    image: stevenrhenaldy/split-bill-app
     build: ../backend
     ports:
       - 3000:3000
@@ -36,7 +37,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_TABLE}
     volumes:
-      - ./data/db/:/var/lib/postgresql
+      - ./data/db/:/var/lib/postgresql/data
     networks:
       - split-bill-network
     healthcheck:
