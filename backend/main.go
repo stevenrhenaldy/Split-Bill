@@ -42,6 +42,9 @@ func main() {
 		&model.ReceiptItemShare{},
 	)
 
+	// Init JWT
+	jwtConfig := config.NewJwtConfig(loadConfig.JWTSecret, loadConfig.JWTLifetimeHour)
+
 	// Init Repositories
 	receiptRepository := repository.NewReceiptRepositoryImpl(db)
 	userRepository := repository.NewUserRepositoryImpl(db)
@@ -51,7 +54,7 @@ func main() {
 
 	// Init Services
 	receiptService := service.NewReceiptServiceImpl(receiptRepository, validate)
-	authService := service.NewAuthServiceImpl(userRepository, validate)
+	authService := service.NewAuthServiceImpl(userRepository, validate, jwtConfig)
 
 	// Init Controllers
 	receiptController := controller.NewReceiptController(receiptService)
