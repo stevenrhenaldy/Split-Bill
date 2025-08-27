@@ -1,6 +1,7 @@
 package service
 
 import (
+	"split-bill/backend/config"
 	"split-bill/backend/dto/request"
 	"split-bill/backend/dto/response"
 	"split-bill/backend/model"
@@ -33,11 +34,17 @@ func (s *AuthServiceImpl) Register(authRequest request.RegisterRequest) error {
 		return err
 	}
 
+	// Apply Password Hash
+	hashed_password, err := config.HashPassword(authRequest.Password)
+	if err != nil {
+		return err
+	}
+
 	userModel := &model.User{
 		Name:              authRequest.Name,
 		Username:          authRequest.Username,
 		Email:             authRequest.Email,
-		Password:          authRequest.Password,
+		Password:          hashed_password,
 		DefaultCurrencyID: authRequest.DefaultCurrencyID,
 		EmailVerifiedAt:   nil,
 	}
