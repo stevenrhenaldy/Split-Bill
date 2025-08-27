@@ -16,12 +16,17 @@ import (
 
 func main() {
 
-	fmt.Print("Starting API server...")
+	fmt.Println("Starting API server...")
 
-	loadConfig, err := config.LoadConfig(".")
+	loadConfig, err := config.LoadConfigFromFile(".")
 	if err != nil {
 		fmt.Printf("Error loading config: %v\n", err)
-		return
+		fmt.Println("Reading from Environment Variable")
+		loadConfig, err = config.LoadConfigFromEnv()
+		if err != nil {
+			fmt.Printf("Error loading config from env: %v\n", err)
+			return
+		}
 	}
 
 	// Database
