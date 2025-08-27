@@ -6,12 +6,13 @@ import (
 )
 
 type Config struct {
-	DBHost     string `mapstructure:"DB_HOST" env:"DB_HOST"`
-	DBPort     int    `mapstructure:"DB_PORT" env:"DB_PORT"`
-	DBUser     string `mapstructure:"DB_USER" env:"DB_USER"`
-	DBPassword string `mapstructure:"DB_PASSWORD" env:"DB_PASSWORD"`
-	DBName     string `mapstructure:"DB_TABLE" env:"DB_TABLE"`
-	JWTSecret  string `mapstructure:"JWT_SECRET" env:"JWT_SECRET"`
+	DBHost          string `mapstructure:"DB_HOST" env:"DB_HOST"`
+	DBPort          int    `mapstructure:"DB_PORT" env:"DB_PORT"`
+	DBUser          string `mapstructure:"DB_USER" env:"DB_USER"`
+	DBPassword      string `mapstructure:"DB_PASSWORD" env:"DB_PASSWORD"`
+	DBName          string `mapstructure:"DB_TABLE" env:"DB_TABLE"`
+	JWTSecret       string `mapstructure:"JWT_SECRET" env:"JWT_SECRET"`
+	JWTLifetimeHour int    `mapstructure:"JWT_LIFETIME" env:"JWT_LIFETIME"`
 }
 
 func LoadConfigFromFile(path string) (config Config, err error) {

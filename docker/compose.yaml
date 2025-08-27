@@ -15,6 +15,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_TABLE=${DB_TABLE}
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_LIFETIME=${JWT_LIFETIME}
     depends_on:
       db:
         condition: service_healthy
