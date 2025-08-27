@@ -7,5 +7,5 @@ import (
 
 type AuthService interface {
 	Register(request.RegisterRequest) error
-	Login(request.LoginRequest) (response.AuthResponse, error)
+	Login(request.LoginRequest) (response.LoginResponse, error)
 }
