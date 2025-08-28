@@ -10,7 +10,7 @@ type AuthResponse struct {
 	UpdatedAt       string `json:"updated_at"`
 }
 
-type LoginResponse struct {
+type TokenResponse struct {
 	Token string `json:"token"`
 }
 
