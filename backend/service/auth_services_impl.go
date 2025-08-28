@@ -25,29 +25,29 @@ func NewAuthServiceImpl(userRepository repository.UserRepository, validate *vali
 }
 
 // Login implements AuthService.
-func (s *AuthServiceImpl) Login(loginRequest request.LoginRequest) (loginResponse response.LoginResponse, err error) {
+func (s *AuthServiceImpl) Login(loginRequest request.LoginRequest) (tokenResponse response.TokenResponse, err error) {
 	err = s.validate.Struct(loginRequest)
 	if err != nil {
-		return loginResponse, err
+		return tokenResponse, err
 	}
 
 	user, err := s.UserRepository.FindByUsername(loginRequest.Username)
 	if err != nil {
-		return loginResponse, err
+		return tokenResponse, err
 	}
 
 	if err := config.CheckPasswordHash(user.Password, loginRequest.Password); err != nil {
-		return loginResponse, err
+		return tokenResponse, err
 	}
 
 	// Generate JWT Token
 	token, err := s.jwtConfig.GenerateJWT(loginRequest.Username)
 	if err != nil {
-		return loginResponse, err
+		return tokenResponse, err
 	}
 
-	loginResponse.Token = token
-	return loginResponse, nil
+	tokenResponse.Token = token
+	return tokenResponse, nil
 }
 
 // Create implements AuthService.
@@ -79,4 +79,29 @@ func (s *AuthServiceImpl) Register(authRequest request.RegisterRequest) error {
 	}
 
 	return nil
+}
+
+// RenewToken implements AuthService.
+func (s *AuthServiceImpl) RenewToken() (response.TokenResponse, error) {
+	panic("unimplemented")
+}
+
+// ForgetPassword implements AuthService.
+func (s *AuthServiceImpl) ForgetPassword(request.ForgetPasswordRequest) error {
+	panic("unimplemented")
+}
+
+// Logout implements AuthService.
+func (s *AuthServiceImpl) Logout() error {
+	panic("unimplemented")
+}
+
+// Me implements AuthService.
+func (s *AuthServiceImpl) Me() (response.MeResponse, error) {
+	panic("unimplemented")
+}
+
+// ResetPassword implements AuthService.
+func (s *AuthServiceImpl) ResetPassword(request.ResetPasswordRequest) error {
+	panic("unimplemented")
 }
