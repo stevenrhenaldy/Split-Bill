@@ -13,3 +13,10 @@ type AuthResponse struct {
 type LoginResponse struct {
 	Token string `json:"token"`
 }
+
+type MeResponse struct {
+	ID              string `json:"id"`
+	Name            string `json:"name"`
+	Username        string `json:"username"`
+	EmailVerifiedAt string `json:"email_verified_at"`
+}
