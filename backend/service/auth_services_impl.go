@@ -6,6 +6,7 @@ import (
 	"split-bill/backend/dto/response"
 	"split-bill/backend/model"
 	"split-bill/backend/repository"
+	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
@@ -52,6 +53,7 @@ func (s *AuthServiceImpl) Login(ctx *fiber.Ctx, loginRequest request.LoginReques
 	cookie.Value = token
 	cookie.HTTPOnly = true
 	cookie.Secure = true
+	cookie.Expires = time.Now().Add(24 * time.Hour)
 	ctx.Cookie(cookie)
 
 	return nil
@@ -112,6 +114,7 @@ func (s *AuthServiceImpl) RenewToken(ctx *fiber.Ctx) (err error) {
 	cookie.Value = token
 	cookie.HTTPOnly = true
 	cookie.Secure = true
+	cookie.Expires = time.Now().Add(24 * time.Hour)
 	ctx.Cookie(cookie)
 
 	return nil
@@ -124,7 +127,13 @@ func (s *AuthServiceImpl) ForgetPassword(request.ForgetPasswordRequest) error {
 
 // Logout implements AuthService.
 func (s *AuthServiceImpl) Logout(ctx *fiber.Ctx) error {
-	ctx.ClearCookie("token")
+	// ctx.ClearCookie("token")
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = ""
+	cookie.HTTPOnly = true
+	cookie.Secure = true
+	ctx.Cookie(cookie)
 	return nil
 }
 
