@@ -46,7 +46,7 @@ func (r *UserRepositoryImpl) FindByUsername(username string) (*model.User, error
 }
 
 // FindByID implements UserRepository.
-func (r *UserRepositoryImpl) FindByID(id string) (*model.User, error) {
+func (r *UserRepositoryImpl) FindByUUID(id uuid.UUID) (*model.User, error) {
 	var user model.User
 	if err := r.Db.Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
