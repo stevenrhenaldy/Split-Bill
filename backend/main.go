@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/helmet"
 )
 
 func main() {
@@ -64,6 +65,8 @@ func main() {
 	routes := router.NewRouter(receiptController, authController)
 
 	app := fiber.New()
+
+	app.Use(helmet.New())
 
 	app.Mount("/api", routes)
 
