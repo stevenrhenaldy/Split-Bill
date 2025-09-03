@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 type JwtConfig struct {
@@ -13,8 +14,8 @@ type JwtConfig struct {
 
 type JWTClaims struct {
 	jwt.MapClaims
-	UserID string `json:"user_id"`
-	Exp    int64  `json:"exp"`
+	UserID uuid.UUID `json:"user_id"`
+	Exp    int64     `json:"exp"`
 }
 
 func NewJwtConfig(secretKey string, lifetimeHour int) *JwtConfig {
@@ -24,7 +25,7 @@ func NewJwtConfig(secretKey string, lifetimeHour int) *JwtConfig {
 	}
 }
 
-func (c *JwtConfig) GenerateJWT(userId string) (string, error) {
+func (c *JwtConfig) GenerateJWT(userId uuid.UUID) (string, error) {
 	claims := JWTClaims{
 		UserID: userId,
 		Exp:    time.Now().Add(c.Lifetime).Unix(),
