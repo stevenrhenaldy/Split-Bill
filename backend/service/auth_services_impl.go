@@ -8,6 +8,7 @@ import (
 	"split-bill/backend/repository"
 
 	"github.com/go-playground/validator"
+	"github.com/gofiber/fiber/v2"
 )
 
 type AuthServiceImpl struct {
@@ -25,29 +26,35 @@ func NewAuthServiceImpl(userRepository repository.UserRepository, validate *vali
 }
 
 // Login implements AuthService.
-func (s *AuthServiceImpl) Login(loginRequest request.LoginRequest) (tokenResponse response.TokenResponse, err error) {
+func (s *AuthServiceImpl) Login(ctx *fiber.Ctx, loginRequest request.LoginRequest) (err error) {
 	err = s.validate.Struct(loginRequest)
 	if err != nil {
-		return tokenResponse, err
+		return err
 	}
 
 	user, err := s.UserRepository.FindByUsername(loginRequest.Username)
 	if err != nil {
-		return tokenResponse, err
+		return err
 	}
 
 	if err := config.CheckPasswordHash(user.Password, loginRequest.Password); err != nil {
-		return tokenResponse, err
+		return err
 	}
 
 	// Generate JWT Token
-	token, err := s.jwtConfig.GenerateJWT(loginRequest.Username)
+	token, err := s.jwtConfig.GenerateJWT(user.ID)
 	if err != nil {
-		return tokenResponse, err
+		return err
 	}
 
-	tokenResponse.Token = token
-	return tokenResponse, nil
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = token
+	cookie.HTTPOnly = true
+	cookie.Secure = true
+	ctx.Cookie(cookie)
+
+	return nil
 }
 
 // Create implements AuthService.
@@ -82,8 +89,32 @@ func (s *AuthServiceImpl) Register(authRequest request.RegisterRequest) error {
 }
 
 // RenewToken implements AuthService.
-func (s *AuthServiceImpl) RenewToken() (response.TokenResponse, error) {
-	panic("unimplemented")
+func (s *AuthServiceImpl) RenewToken(ctx *fiber.Ctx) (err error) {
+	// Generate JWT Token
+
+	jwtToken := ctx.Cookies("token")
+	jwtClaims, err := s.jwtConfig.ValidateToken(jwtToken)
+	if err != nil {
+		return err
+	}
+
+	user, err := s.UserRepository.FindByUUID(jwtClaims.UserID)
+	if err != nil {
+		return err
+	}
+
+	token, err := s.jwtConfig.GenerateJWT(user.ID)
+	if err != nil {
+		return err
+	}
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = token
+	cookie.HTTPOnly = true
+	cookie.Secure = true
+	ctx.Cookie(cookie)
+
+	return nil
 }
 
 // ForgetPassword implements AuthService.
@@ -92,8 +123,9 @@ func (s *AuthServiceImpl) ForgetPassword(request.ForgetPasswordRequest) error {
 }
 
 // Logout implements AuthService.
-func (s *AuthServiceImpl) Logout() error {
-	panic("unimplemented")
+func (s *AuthServiceImpl) Logout(ctx *fiber.Ctx) error {
+	ctx.ClearCookie("token")
+	return nil
 }
 
 // Me implements AuthService.

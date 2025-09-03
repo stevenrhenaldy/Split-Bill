@@ -38,10 +38,27 @@ func (controller *AuthController) Login(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	loginResponse, err := controller.AuthService.Login(loginRequest)
+	err := controller.AuthService.Login(ctx, loginRequest)
 	if err != nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(loginResponse)
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Login successful"})
+}
+
+func (controller *AuthController) RenewToken(ctx *fiber.Ctx) error {
+	err := controller.AuthService.RenewToken(ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Token renewed successfully"})
+}
+
+func (controller *AuthController) Logout(ctx *fiber.Ctx) error {
+	err := controller.AuthService.Logout(ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Logout successful"})
 }

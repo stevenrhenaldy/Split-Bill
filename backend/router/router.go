@@ -20,6 +20,8 @@ func NewRouter(receiptController *controller.ReceiptController, authController *
 	router.Route("/auth", func(router fiber.Router) {
 		router.Post("/register", authController.Register)
 		router.Post("/login", authController.Login)
+		router.Post("/renew-token", authController.RenewToken)
+		router.Post("/logout", authController.Logout)
 	})
 
 	return router
