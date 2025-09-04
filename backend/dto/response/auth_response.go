@@ -15,8 +15,9 @@ type TokenResponse struct {
 }
 
 type MeResponse struct {
-	ID              string `json:"id"`
-	Name            string `json:"name"`
-	Username        string `json:"username"`
-	EmailVerifiedAt string `json:"email_verified_at"`
+	ID                string `json:"id"`
+	Name              string `json:"name"`
+	Username          string `json:"username"`
+	EmailVerifiedAt   string `json:"email_verified_at"`
+	DefaultCurrencyID string `json:"default_currency_id"`
 }

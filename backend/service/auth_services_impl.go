@@ -121,7 +121,7 @@ func (s *AuthServiceImpl) RenewToken(ctx *fiber.Ctx) (err error) {
 }
 
 // ForgetPassword implements AuthService.
-func (s *AuthServiceImpl) ForgetPassword(request.ForgetPasswordRequest) error {
+func (s *AuthServiceImpl) ForgetPassword(model.User, request.ForgetPasswordRequest) error {
 	panic("unimplemented")
 }
 
@@ -138,11 +138,16 @@ func (s *AuthServiceImpl) Logout(ctx *fiber.Ctx) error {
 }
 
 // Me implements AuthService.
-func (s *AuthServiceImpl) Me() (response.MeResponse, error) {
-	panic("unimplemented")
+func (s *AuthServiceImpl) Me(user model.User) (response.MeResponse, error) {
+	return response.MeResponse{
+		ID:                user.ID.String(),
+		Name:              user.Name,
+		Username:          user.Username,
+		DefaultCurrencyID: user.DefaultCurrencyID,
+	}, nil
 }
 
 // ResetPassword implements AuthService.
-func (s *AuthServiceImpl) ResetPassword(request.ResetPasswordRequest) error {
+func (s *AuthServiceImpl) ResetPassword(model.User, request.ResetPasswordRequest) error {
 	panic("unimplemented")
 }

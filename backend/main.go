@@ -5,6 +5,7 @@ import (
 
 	"split-bill/backend/config"
 	"split-bill/backend/controller"
+	"split-bill/backend/middleware"
 	"split-bill/backend/model"
 	"split-bill/backend/repository"
 	"split-bill/backend/router"
@@ -61,8 +62,11 @@ func main() {
 	receiptController := controller.NewReceiptController(receiptService)
 	authController := controller.NewAuthController(authService)
 
+	// Init Middleware
+	authMiddleware := middleware.NewAuth(jwtConfig, userRepository)
+
 	// Routes
-	routes := router.NewRouter(receiptController, authController)
+	routes := router.NewRouter(authMiddleware, receiptController, authController)
 
 	app := fiber.New()
 

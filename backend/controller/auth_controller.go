@@ -2,6 +2,7 @@ package controller
 
 import (
 	"split-bill/backend/dto/request"
+	"split-bill/backend/model"
 	"split-bill/backend/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -61,4 +62,13 @@ func (controller *AuthController) Logout(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
 	}
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Logout successful"})
+}
+
+func (controller *AuthController) Me(ctx *fiber.Ctx) error {
+	user := ctx.Locals("user").(*model.User)
+	response, err := controller.AuthService.Me(*user)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(response)
 }
