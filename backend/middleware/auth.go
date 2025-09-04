@@ -9,14 +9,13 @@ import (
 )
 
 type AuthOptions struct {
-	// Required
-	JwtConfig      config.JwtConfig
+	JwtConfig      *config.JwtConfig
 	CookieName     string
 	UserRepository repository.UserRepository
 }
 
 // NewAuth returns a Fiber handler that enforces JWT on protected routes.
-func NewAuth(jwtConfig config.JwtConfig, userRepository repository.UserRepository) fiber.Handler {
+func NewAuth(jwtConfig *config.JwtConfig, userRepository repository.UserRepository) fiber.Handler {
 	// sensible defaults
 	opt := &AuthOptions{
 		CookieName:     "token",
@@ -40,7 +39,6 @@ func NewAuth(jwtConfig config.JwtConfig, userRepository repository.UserRepositor
 			return fiber.ErrUnauthorized
 		}
 
-		// Check expiration (Parse + WithLeeway already enforces "exp" if present)
 		if exp := claims.Exp; exp < time.Now().Unix() {
 			return fiber.ErrUnauthorized
 		}
