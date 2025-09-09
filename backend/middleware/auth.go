@@ -18,7 +18,7 @@ type AuthOptions struct {
 func NewAuth(jwtConfig *config.JwtConfig, userRepository repository.UserRepository) fiber.Handler {
 	// sensible defaults
 	opt := &AuthOptions{
-		CookieName:     "token",
+		CookieName:     "access_token",
 		JwtConfig:      jwtConfig,
 		UserRepository: userRepository,
 	}
