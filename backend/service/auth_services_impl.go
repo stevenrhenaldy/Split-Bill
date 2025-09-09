@@ -33,7 +33,7 @@ func (s *AuthServiceImpl) Login(ctx *fiber.Ctx, loginRequest request.LoginReques
 		return err
 	}
 
-	user, err := s.UserRepository.FindByUsername(loginRequest.Username)
+	user, err := s.UserRepository.FindByUsernameOrEmail(loginRequest.Username)
 	if err != nil {
 		return err
 	}
