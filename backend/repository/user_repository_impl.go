@@ -45,6 +45,24 @@ func (r *UserRepositoryImpl) FindByUsername(username string) (*model.User, error
 	return &user, nil
 }
 
+// FindByEmail implements UserRepository.
+func (r *UserRepositoryImpl) FindByEmail(email string) (*model.User, error) {
+	var user model.User
+	if err := r.Db.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+// FindByUsernameOrEmail implements UserRepository.
+func (r *UserRepositoryImpl) FindByUsernameOrEmail(input string) (*model.User, error) {
+	var user model.User
+	if err := r.Db.Where("username = ? OR email = ?", input, input).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 // FindByID implements UserRepository.
 func (r *UserRepositoryImpl) FindByUUID(id uuid.UUID) (*model.User, error) {
 	var user model.User
