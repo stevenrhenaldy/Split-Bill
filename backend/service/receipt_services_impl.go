@@ -23,7 +23,7 @@ func NewReceiptServiceImpl(receiptRepository repository.ReceiptRepository, valid
 }
 
 // Create implements ReceiptService.
-func (r *ReceiptServiceImpl) Create(receipt request.CreateReceiptRequest) (response.ReceiptResponse, error) {
+func (r *ReceiptServiceImpl) Create(user *model.User, receipt request.CreateReceiptRequest) (response.ReceiptResponse, error) {
 	err := r.validate.Struct(receipt)
 	if err != nil {
 		return response.ReceiptResponse{}, err
@@ -31,9 +31,10 @@ func (r *ReceiptServiceImpl) Create(receipt request.CreateReceiptRequest) (respo
 
 	receiptModel := &model.Receipt{
 		Name:        receipt.Name,
+		UserID:      user.ID,
 		Description: receipt.Description,
 	}
-	receiptModel, err = r.ReceiptRepository.Create(receiptModel)
+	receiptModel, err = r.ReceiptRepository.Create(user, receiptModel)
 	if err != nil {
 		return response.ReceiptResponse{}, err
 	}
@@ -41,19 +42,20 @@ func (r *ReceiptServiceImpl) Create(receipt request.CreateReceiptRequest) (respo
 		ID:          receiptModel.ID.String(),
 		Name:        receiptModel.Name,
 		Description: receiptModel.Description,
+		UserID:      receiptModel.UserID.String(),
 		CreatedAt:   receiptModel.CreatedAt.String(),
 		UpdatedAt:   receiptModel.UpdatedAt.String(),
 	}, nil
 }
 
 // Delete implements ReceiptService.
-func (r *ReceiptServiceImpl) Delete(id uuid.UUID) error {
-	return r.ReceiptRepository.Delete(id.String())
+func (r *ReceiptServiceImpl) Delete(user *model.User, id uuid.UUID) error {
+	return r.ReceiptRepository.Delete(user, id.String())
 }
 
 // FindAll implements ReceiptService.
-func (r *ReceiptServiceImpl) FindAll() ([]response.ReceiptResponse, error) {
-	receipts, err := r.ReceiptRepository.FindAll()
+func (r *ReceiptServiceImpl) FindAll(user *model.User) ([]response.ReceiptResponse, error) {
+	receipts, err := r.ReceiptRepository.FindAll(user)
 	if err != nil {
 		return []response.ReceiptResponse{}, err
 	}
@@ -64,6 +66,7 @@ func (r *ReceiptServiceImpl) FindAll() ([]response.ReceiptResponse, error) {
 			ID:          receipt.ID.String(),
 			Name:        receipt.Name,
 			Description: receipt.Description,
+			UserID:      receipt.UserID.String(),
 			CreatedAt:   receipt.CreatedAt.String(),
 			UpdatedAt:   receipt.UpdatedAt.String(),
 		})
@@ -72,8 +75,8 @@ func (r *ReceiptServiceImpl) FindAll() ([]response.ReceiptResponse, error) {
 }
 
 // FindByID implements ReceiptService.
-func (r *ReceiptServiceImpl) FindByID(id uuid.UUID) (response.ReceiptResponse, error) {
-	receipt, err := r.ReceiptRepository.FindByID(id.String())
+func (r *ReceiptServiceImpl) FindByID(user *model.User, id uuid.UUID) (response.ReceiptResponse, error) {
+	receipt, err := r.ReceiptRepository.FindByID(user, id.String())
 	if err != nil {
 		return response.ReceiptResponse{}, err
 	}
@@ -81,13 +84,14 @@ func (r *ReceiptServiceImpl) FindByID(id uuid.UUID) (response.ReceiptResponse, e
 		ID:          receipt.ID.String(),
 		Name:        receipt.Name,
 		Description: receipt.Description,
+		UserID:      receipt.UserID.String(),
 		CreatedAt:   receipt.CreatedAt.String(),
 		UpdatedAt:   receipt.UpdatedAt.String(),
 	}, nil
 }
 
 // Update implements ReceiptService.
-func (r *ReceiptServiceImpl) Update(id uuid.UUID, receipt request.UpdateReceiptRequest) (response.ReceiptResponse, error) {
+func (r *ReceiptServiceImpl) Update(user *model.User, id uuid.UUID, receipt request.UpdateReceiptRequest) (response.ReceiptResponse, error) {
 	err := r.validate.Struct(receipt)
 	if err != nil {
 		return response.ReceiptResponse{}, err
@@ -99,7 +103,7 @@ func (r *ReceiptServiceImpl) Update(id uuid.UUID, receipt request.UpdateReceiptR
 		Description: receipt.Description,
 	}
 
-	receiptModel, err = r.ReceiptRepository.Update(receiptModel)
+	receiptModel, err = r.ReceiptRepository.Update(user, receiptModel)
 	if err != nil {
 		return response.ReceiptResponse{}, err
 	}
@@ -108,6 +112,7 @@ func (r *ReceiptServiceImpl) Update(id uuid.UUID, receipt request.UpdateReceiptR
 		ID:          receiptModel.ID.String(),
 		Name:        receiptModel.Name,
 		Description: receiptModel.Description,
+		UserID:      receiptModel.UserID.String(),
 		CreatedAt:   receiptModel.CreatedAt.String(),
 		UpdatedAt:   receiptModel.UpdatedAt.String(),
 	}, nil

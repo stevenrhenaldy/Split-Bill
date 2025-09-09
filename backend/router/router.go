@@ -10,11 +10,11 @@ func NewRouter(authMiddleware fiber.Handler, receiptController *controller.Recei
 	router := fiber.New()
 
 	router.Route("/receipts", func(router fiber.Router) {
-		router.Post("/", receiptController.Create)
-		router.Get("/", receiptController.FindAll)
-		router.Get("/:id", receiptController.FindByID)
-		router.Put("/:id", receiptController.Update)
-		router.Delete("/:id", receiptController.Delete)
+		router.Post("/", authMiddleware, receiptController.Create)
+		router.Get("/", authMiddleware, receiptController.FindAll)
+		router.Get("/:id", authMiddleware, receiptController.FindByID)
+		router.Put("/:id", authMiddleware, receiptController.Update)
+		router.Delete("/:id", authMiddleware, receiptController.Delete)
 	})
 
 	router.Route("/auth", func(router fiber.Router) {

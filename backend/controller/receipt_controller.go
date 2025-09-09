@@ -2,6 +2,7 @@ package controller
 
 import (
 	"split-bill/backend/dto/request"
+	"split-bill/backend/model"
 	"split-bill/backend/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,7 +25,8 @@ func (controller *ReceiptController) Create(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	receiptResponse, err := controller.ReceiptService.Create(createReceiptRequest)
+	user := ctx.Locals("user").(*model.User)
+	receiptResponse, err := controller.ReceiptService.Create(user, createReceiptRequest)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -33,7 +35,8 @@ func (controller *ReceiptController) Create(ctx *fiber.Ctx) error {
 }
 
 func (controller *ReceiptController) FindAll(ctx *fiber.Ctx) error {
-	receipts, err := controller.ReceiptService.FindAll()
+	user := ctx.Locals("user").(*model.User)
+	receipts, err := controller.ReceiptService.FindAll(user)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -47,7 +50,8 @@ func (controller *ReceiptController) FindByID(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid UUID"})
 	}
 
-	receipt, err := controller.ReceiptService.FindByID(parsedUUID)
+	user := ctx.Locals("user").(*model.User)
+	receipt, err := controller.ReceiptService.FindByID(user, parsedUUID)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -67,7 +71,8 @@ func (controller *ReceiptController) Update(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid UUID"})
 	}
 
-	updatedReceipt, err := controller.ReceiptService.Update(parsedUUID, updateReceiptRequest)
+	user := ctx.Locals("user").(*model.User)
+	updatedReceipt, err := controller.ReceiptService.Update(user, parsedUUID, updateReceiptRequest)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -82,7 +87,8 @@ func (controller *ReceiptController) Delete(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid UUID"})
 	}
 
-	if err := controller.ReceiptService.Delete(parsedUUID); err != nil {
+	user := ctx.Locals("user").(*model.User)
+	if err := controller.ReceiptService.Delete(user, parsedUUID); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
