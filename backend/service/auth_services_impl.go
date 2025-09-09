@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"split-bill/backend/config"
 	"split-bill/backend/dto/request"
 	"split-bill/backend/dto/response"
@@ -61,9 +62,21 @@ func (s *AuthServiceImpl) Login(ctx *fiber.Ctx, loginRequest request.LoginReques
 
 // Create implements AuthService.
 func (s *AuthServiceImpl) Register(authRequest request.RegisterRequest) error {
+	// Validate the request
 	err := s.validate.Struct(authRequest)
 	if err != nil {
 		return err
+	}
+
+	// Check if username or email already exists
+	_, err = s.UserRepository.FindByUsername(authRequest.Username)
+	if err == nil {
+		return errors.New("username already exists")
+	}
+
+	_, err = s.UserRepository.FindByEmail(authRequest.Email)
+	if err == nil {
+		return errors.New("email already exists")
 	}
 
 	// Apply Password Hash
