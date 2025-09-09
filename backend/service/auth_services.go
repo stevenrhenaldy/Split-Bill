@@ -14,6 +14,6 @@ type AuthService interface {
 	Logout(*fiber.Ctx) error
 	RenewToken(*fiber.Ctx) error
 	Me(model.User) (response.MeResponse, error)
-	ForgetPassword(model.User, request.ForgetPasswordRequest) error
-	ResetPassword(model.User, request.ResetPasswordRequest) error
+	ForgetPassword(request.ForgetPasswordRequest) error
+	ResetPassword(request.ResetPasswordRequest) error
 }

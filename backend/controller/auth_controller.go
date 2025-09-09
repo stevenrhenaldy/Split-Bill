@@ -72,3 +72,16 @@ func (controller *AuthController) Me(ctx *fiber.Ctx) error {
 	}
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
+
+func (controller *AuthController) ForgetPassword(ctx *fiber.Ctx) error {
+	var forgetPasswordRequest request.ForgetPasswordRequest
+	if err := ctx.BodyParser(&forgetPasswordRequest); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	err := controller.AuthService.ForgetPassword(forgetPasswordRequest)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Password reset link sent to your email"})
+}
