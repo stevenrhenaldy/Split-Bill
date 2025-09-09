@@ -49,7 +49,7 @@ func (s *AuthServiceImpl) Login(ctx *fiber.Ctx, loginRequest request.LoginReques
 	}
 
 	cookie := new(fiber.Cookie)
-	cookie.Name = "token"
+	cookie.Name = "access_token"
 	cookie.Value = token
 	cookie.HTTPOnly = true
 	cookie.Secure = true
@@ -94,7 +94,7 @@ func (s *AuthServiceImpl) Register(authRequest request.RegisterRequest) error {
 func (s *AuthServiceImpl) RenewToken(ctx *fiber.Ctx) (err error) {
 	// Generate JWT Token
 
-	jwtToken := ctx.Cookies("token")
+	jwtToken := ctx.Cookies("access_token")
 	jwtClaims, err := s.jwtConfig.ValidateToken(jwtToken)
 	if err != nil {
 		return err
@@ -110,7 +110,7 @@ func (s *AuthServiceImpl) RenewToken(ctx *fiber.Ctx) (err error) {
 		return err
 	}
 	cookie := new(fiber.Cookie)
-	cookie.Name = "token"
+	cookie.Name = "access_token"
 	cookie.Value = token
 	cookie.HTTPOnly = true
 	cookie.Secure = true
@@ -122,9 +122,9 @@ func (s *AuthServiceImpl) RenewToken(ctx *fiber.Ctx) (err error) {
 
 // Logout implements AuthService.
 func (s *AuthServiceImpl) Logout(ctx *fiber.Ctx) error {
-	// ctx.ClearCookie("token")
+	// ctx.ClearCookie("access_token")
 	cookie := new(fiber.Cookie)
-	cookie.Name = "token"
+	cookie.Name = "access_token"
 	cookie.Value = ""
 	cookie.HTTPOnly = true
 	cookie.Secure = true
